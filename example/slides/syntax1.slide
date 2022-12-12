@@ -1,0 +1,15 @@
+                                    ==Syntax==
+
+
+# Unordered list
+
+- _Italic text_
+- **Bold text**
+- ___Italic and bold text___
+- ~~Strikethrough text~~
+
+# Numbered list
+
+1. First item
+2. Second item
+3. Third item

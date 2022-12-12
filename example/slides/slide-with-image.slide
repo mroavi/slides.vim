@@ -1,0 +1,19 @@
+                             ==Slide with an Image==
+
+
+
+
+
+
+
+
+
+
+
+!!start
+lua << EOF
+local source = vim.fn.expand('%:p:h:h')  .. '/images/dice.png'
+local image = require('hologram.image'):new(source, {})
+image:display(3, 0, vim.api.nvim_get_current_buf(), {})
+EOF
+!!end

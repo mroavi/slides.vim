@@ -1,0 +1,24 @@
+                                ==Syntax (cont.)==
+
+
+# Unicode bullets
+
+• First item
+• Second item
+  ▸ First subitem
+  ▸ Second subitem
+• Third item
+
+# Checkboxes
+
+[x] Task 1
+[ ] Task 2
+[x] Task 3
+
+# LaTeX equations
+
+$f(n) = n^5 + 4n^2 + 2 |_{n=17}$
+
+# URLs
+
+<https://www.tue.nl/en/>

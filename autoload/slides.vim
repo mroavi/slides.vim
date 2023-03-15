@@ -139,7 +139,7 @@ endfunction
 "function s:set_cursor_color()
 "  if $TERM ==# 'alacritty' && !empty(s:win_id)
 "    let s:win_id = expand("$ALACRITTY_WINDOW_ID")
-"    call system(printf("alacritty msg config -w %s colors.cursor.background='\"%s\"'", s:s:win_id, g:slides_cursor_color))
+"    call system(printf("alacritty msg config -w %s colors.cursor.background='\"%s\"'", s:win_id, g:slides_cursor_color))
 "  elseif $TERM ==# 'xterm-kitty' && !empty(s:socket)
 "    " TODO: not working (apparently it is getting reset by posterior goyo configs)
 "    call system(printf("kitty @ --to %s set-colors cursor=%s", s:socket, g:slides_cursor_color))

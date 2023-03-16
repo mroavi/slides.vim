@@ -72,8 +72,8 @@ endfunction
 
 function s:set_cursor_color()
   if $TERM ==# 'alacritty'
-    let s:cursor_color_current = matchstr(readfile(expand(g:alacritty_config_filepath)), '^      cursor:')
-    let s:cursor_color_new = '      cursor:   "' . g:slides_cursor_color . '"'
+    let s:cursor_color_current = matchstr(readfile(expand(g:alacritty_config_filepath)), '^    cursor:')
+    let s:cursor_color_new = '    cursor: "' . g:slides_cursor_color . '"'
     let sed_cmd = "sed -i 's/" . escape(s:cursor_color_current, '#') . "/" . escape(s:cursor_color_new, '#') . "/g'"
     silent execute "!" . sed_cmd . " " . g:alacritty_config_filepath
   elseif $TERM ==# 'xterm-kitty'

@@ -2,8 +2,8 @@ let g:slides_font_size = get(g:, "slides_font_size", 18)
 let g:slides_cursor_color = get(g:, "slides_cursor_color", "#282828")
 let g:slides_cursor_text_color = get(g:, "slides_cursor_text_color", "#ffc24b")
 
-let s:win_id = expand("$ALACRITTY_WINDOW_ID")
-let s:socket = expand("$KITTY_LISTEN_ON")
+let s:alacritty_win_id = expand("$ALACRITTY_WINDOW_ID")
+let s:kitty_socket = expand("$KITTY_LISTEN_ON")
 
 " ---------------------------------------------------------------------------
 " statusline
@@ -28,134 +28,53 @@ function s:statusline_refresh()
   setlocal statusline+=%{StatuslineSlideNumber()} " insert slide number
 endfunction
 
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" TEMPORAL START (remove this once the better alternative approach is fixed)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:alacritty_config_filepath = expand('~/.config/alacritty/alacritty.yml')
-let g:kitty_config_filepath = expand('~/.config/kitty/kitty.conf')
-
-" ---------------------------------------------------------------------------
-" font size (TEMP)
-" ---------------------------------------------------------------------------
-
-function s:set_font_size()
-  if $TERM ==# 'alacritty'
-    let s:font_size_current = matchstr(readfile(expand(g:alacritty_config_filepath)), '^  size:')
-    let s:font_size_new = '  size: ' . g:slides_font_size
-    let sed_cmd = "sed -i 's/" . s:font_size_current . "/" . s:font_size_new . "/g'"
-    silent execute "!" . sed_cmd . " " . g:alacritty_config_filepath
-  elseif $TERM ==# 'xterm-kitty'
-    let s:font_size_current = matchstr(readfile(expand(g:kitty_config_filepath)), '^font_size ')
-    let s:font_size_new = 'font_size ' . g:slides_font_size
-    let sed_cmd = "sed -i 's/" . s:font_size_current . "/" . s:font_size_new . "/g'"
-    silent execute "!" . sed_cmd . " " . g:kitty_config_filepath
-    silent exec "!kill -s USR1 `pgrep -f kitty`"
-  endif
-endfunction
-
-function s:reset_font_size()
-  if $TERM ==# 'alacritty'
-    let sed_cmd = "sed -i 's/" . s:font_size_new . "/" . s:font_size_current . "/g'"
-    silent execute "!" . sed_cmd . " " . g:alacritty_config_filepath
-  elseif $TERM ==# 'xterm-kitty'
-    let sed_cmd = "sed -i 's/" . s:font_size_new . "/" . s:font_size_current . "/g'"
-    silent execute "!" . sed_cmd . " " . g:kitty_config_filepath
-    silent exec "!kill -s USR1 `pgrep -f kitty`"
-  endif
-endfunction
-
-" ---------------------------------------------------------------------------
-" Cursor color (TEMP)
-" ---------------------------------------------------------------------------
-
-function s:set_cursor_color()
-  if $TERM ==# 'alacritty'
-    let s:cursor_color_current = matchstr(readfile(expand(g:alacritty_config_filepath)), '^    cursor:')
-    let s:cursor_color_new = '    cursor: "' . g:slides_cursor_color . '"'
-    let sed_cmd = "sed -i 's/" . escape(s:cursor_color_current, '#') . "/" . escape(s:cursor_color_new, '#') . "/g'"
-    silent execute "!" . sed_cmd . " " . g:alacritty_config_filepath
-  elseif $TERM ==# 'xterm-kitty'
-    " Cursor color
-    let s:cursor_color_current = matchstr(readfile(expand(g:kitty_config_filepath)), '^cursor ')
-    let s:cursor_color_new = 'cursor ' . g:slides_cursor_color
-    let sed_cmd = "sed -i 's/" . escape(s:cursor_color_current, '#') . "/" . escape(s:cursor_color_new, '#') . "/g'"
-    silent execute "!" . sed_cmd . " " . g:kitty_config_filepath
-    " Cursor text color
-    let s:cursor_text_color_current = matchstr(readfile(expand(g:kitty_config_filepath)), '^cursor_text_color ')
-    let s:cursor_text_color_new = 'cursor_text_color ' . g:slides_cursor_text_color
-    let sed_cmd = "sed -i 's/" . escape(s:cursor_text_color_current, '#') . "/" . escape(s:cursor_text_color_new, '#') . "/g'"
-    silent execute "!" . sed_cmd . " " . g:kitty_config_filepath
-    silent exec "!kill -s USR1 `pgrep -f kitty`"
-  endif
-endfunction
-
-function s:reset_cursor_color()
-  if $TERM ==# 'alacritty'
-    let sed_cmd = "sed -i 's/" . escape(s:cursor_color_new, '#') . "/" . escape(s:cursor_color_current, '#') . "/g'"
-    silent execute "!" . sed_cmd . " " . g:alacritty_config_filepath
-  elseif $TERM ==# 'xterm-kitty'
-    " Cursor color
-    let sed_cmd = "sed -i 's/" . escape(s:cursor_color_new, '#') . "/" . escape(s:cursor_color_current, '#') . "/g'"
-    silent execute "!" . sed_cmd . " " . g:kitty_config_filepath
-    " Cursor text color
-    let sed_cmd = "sed -i 's/" . escape(s:cursor_text_color_new, '#') . "/" . escape(s:cursor_text_color_current, '#') . "/g'"
-    silent execute "!" . sed_cmd . " " . g:kitty_config_filepath
-    silent exec "!kill -s USR1 `pgrep -f kitty`"
-  endif
-endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" TEMPORAL END
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 " ---------------------------------------------------------------------------
 " font size
 " ---------------------------------------------------------------------------
 
-"function s:set_font_size()
-"  if $TERM ==# 'alacritty' && !empty(s:win_id)
-"    call system(printf("alacritty msg config -w %s font.size=%s", s:win_id, g:slides_font_size))
-"  elseif $TERM ==# 'xterm-kitty' && !empty(s:socket)
-"    call system(printf("kitty @ --to %s set-font-size %s", s:socket, g:slides_font_size))
-"    redraw
-"  endif
-"endfunction
+function s:set_font_size()
+  if $TERM ==# 'xterm-256color' && !empty(s:alacritty_win_id)
+    call system(printf("alacritty msg config -w %s font.size=%s", s:alacritty_win_id, g:slides_font_size))
+  elseif $TERM ==# 'xterm-kitty' && !empty(s:kitty_socket)
+    call system(printf("kitty @ --to %s set-font-size %s", s:kitty_socket, g:slides_font_size))
+    redraw
+  endif
+endfunction
 
-"function s:reset_font_size()
-"  if $TERM ==# 'alacritty' && !empty(s:win_id)
-"    call system(printf("alacritty msg config -w %s --reset", s:win_id))
-"  elseif $TERM ==# 'xterm-kitty' && !empty(s:socket)
-"    call system(printf("kitty @ --to %s set-font-size %s", s:socket, 0))
-"    redraw
-"  endif
-"endfunction
+function s:reset_font_size()
+  if $TERM ==# 'xterm-256color' && !empty(s:alacritty_win_id)
+    call system(printf("alacritty msg config -w %s --reset", s:alacritty_win_id))
+  elseif $TERM ==# 'xterm-kitty' && !empty(s:kitty_socket)
+    "call system(printf("kitty @ --to %s set-font-size %s", s:kitty_socket, 0))
+    call system(printf("kitty @ --to %s set-font-size %s", s:kitty_socket, 11)) " TEMP - see: https://github.com/kovidgoyal/kitty/issues/5992
+    redraw
+  endif
+endfunction
 
 " ---------------------------------------------------------------------------
 " Cursor color
 " ---------------------------------------------------------------------------
 
-"function s:set_cursor_color()
-"  if $TERM ==# 'alacritty' && !empty(s:win_id)
-"    let s:win_id = expand("$ALACRITTY_WINDOW_ID")
-"    call system(printf("alacritty msg config -w %s colors.cursor.background='\"%s\"'", s:win_id, g:slides_cursor_color))
-"  elseif $TERM ==# 'xterm-kitty' && !empty(s:socket)
-"    " TODO: not working (apparently it is getting reset by posterior goyo configs)
-"    call system(printf("kitty @ --to %s set-colors cursor=%s", s:socket, g:slides_cursor_color))
-"    echom printf("kitty @ --to %s set-colors cursor=%s", s:socket, g:slides_cursor_color)
-"    redraw
-"  endif
-"endfunction
+function s:set_cursor_color()
+  if $TERM ==# 'xterm-256color' && !empty(s:alacritty_win_id)
+    let s:alacritty_win_id = expand("$ALACRITTY_WINDOW_ID")
+    call system(printf("alacritty msg config -w %s colors.cursor.background='\"%s\"'", s:alacritty_win_id, g:slides_cursor_color))
+  elseif $TERM ==# 'xterm-kitty' && !empty(s:kitty_socket)
+    " TODO: not working (apparently it is getting reset by posterior goyo configs)
+    call system(printf("kitty @ --to %s set-colors cursor=%s", s:kitty_socket, g:slides_cursor_color))
+    "echom printf("kitty @ --to %s set-colors cursor=%s", s:kitty_socket, g:slides_cursor_color)
+    redraw
+  endif
+endfunction
 
-"function s:reset_cursor_color()
-"  if $TERM ==# 'alacritty' && !empty(s:win_id)
-"    call system(printf("alacritty msg config -w %s --reset", s:win_id))
-"  elseif $TERM ==# 'xterm-kitty' && !empty(s:socket)
-"    call system(printf("kitty @ --to %s set-colors --reset", s:socket))
-"    redraw
-"  endif
-"endfunction
+function s:reset_cursor_color()
+  if $TERM ==# 'xterm-256color' && !empty(s:alacritty_win_id)
+    call system(printf("alacritty msg config -w %s --reset", s:alacritty_win_id))
+  elseif $TERM ==# 'xterm-kitty' && !empty(s:kitty_socket)
+    call system(printf("kitty @ --to %s set-colors --reset", s:kitty_socket))
+    redraw
+  endif
+endfunction
 
 " ---------------------------------------------------------------------------
 " Silent argument list navigation (suppresses "E165: Cannot go beyond/before last/first file")

@@ -49,6 +49,8 @@ use 'mroavi/slides.vim'
 | `:Present` | Toggle presentation mode |
 | `j`        | Next slide               |
 | `k`        | Previous slide           |
+| `J`        | Next paragraph           |
+| `K`        | Previous paragraph       |
 
 ## Configuration
 

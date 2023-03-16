@@ -102,6 +102,10 @@ function! s:goyo_enter()
   nnoremap <silent> j :call <SID>next_silent()<CR>
   nnoremap <silent> k :call <SID>prev_silent()<CR>
 
+  " Set paragraph navigation mappings 
+  nnoremap <silent> J }j
+  nnoremap <silent> K {k
+
   " Create autocommands
   augroup presentation_mode
     autocmd!
@@ -119,7 +123,7 @@ endfunction
 
 function! s:position_cursor()
   0 " place cursor on the first line
-  call search("^$", 'cw') " place cursor on the next empty line
+  "call search("^$", 'cw') " place cursor on the next empty line
 endfunction
 
 " ---------------------------------------------------------------------------
@@ -134,6 +138,8 @@ function! s:goyo_leave()
   " Unset slide navigation mappings
   nunmap j
   nunmap k
+  nunmap J
+  nunmap K
 
   " Remove autocommands 
   augroup presentation_mode

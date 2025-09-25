@@ -98,6 +98,9 @@ function! s:goyo_enter()
   call s:set_font_size() " set presentation mode font size
   call s:set_cursor_color() " change cursor's background color
 
+  " Hide ~ at end-of-buffer (use a space instead)
+  set fillchars+=eob:\ 
+
   " Set slide navigation mappings 
   nnoremap <silent> j :call <SID>next_silent()<CR>
   nnoremap <silent> k :call <SID>prev_silent()<CR>
@@ -134,6 +137,7 @@ function! s:goyo_leave()
   lua require"gitsigns".toggle_signs(true)
   call s:reset_font_size() " reset font size
   call s:reset_cursor_color() " reset cursor's color
+  setlocal fillchars&  " restore default end-of-buffer (~) symbols
 
   " Unset slide navigation mappings
   nunmap j

@@ -125,8 +125,8 @@ function! s:goyo_enter()
 endfunction
 
 function! s:position_cursor()
-  0 " place cursor on the first line
-  "call search("^$", 'cw') " place cursor on the next empty line
+  "0 " place cursor on the first line
+  call search("^$", 'cw') " place cursor on the next empty line
 endfunction
 
 " ---------------------------------------------------------------------------
